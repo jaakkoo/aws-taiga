@@ -17,7 +17,9 @@ Prerequisities
   * Or `brew install terraform`
 * Properly configured `~/.aws/credentials`
 * Properly configured `./local.tfvars` (see `local.tfvars.template`)
-* SSH key to access instances
+* SSH key to access instances and path to it in `inventory/hosts`
+* Properly configured `local.tfvars.temlate` (copy it to `local.tfvars`)
+
 
 Installation instructions
 -------------------------
@@ -31,3 +33,5 @@ Installation instructions
 * Install [terraform-inventory](https://github.com/adammck/terraform-inventory)
   * `go get -u https://github.com/adammck/terraform-inventory`
   * or `brew install terraform-inventory`
+* Run terraform: `terraform apply -var-file local.tfvars`
+* Run ansible: `ansible-playbook taiga.yml`
