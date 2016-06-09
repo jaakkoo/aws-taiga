@@ -1,0 +1,4 @@
+---
+- include: dependencies.yml
+- include: config.yml
+  tags: config

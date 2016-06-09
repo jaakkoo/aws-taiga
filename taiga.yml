@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  tasks:
+  - name: Terraform variables to ansible facts
+    terraform-facts: varsfile="terraform.tfvars local.tfvars"
+
+  - name: Get RDS dabase
+    rds:
+      instance_name: "{{ terraform.database_id }}"
+      command: facts
+      region: "{{ terraform.region }}"
+    register: ec2_facts
+
+  tags: config
+
+- hosts: taiga
+  become: yes
+  become_method: sudo
+  gather_facts: true
+  roles:
+    - server_conf
+
+- hosts: taiga
+  become: yes
+  become_method: sudo
+  become_user: taiga
+  gather_facts: false
+  roles:
+    - taiga-back
+    - taiga-front

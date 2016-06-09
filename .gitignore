@@ -1,0 +1,5 @@
+venv/
+*.retry
+terraform.tfstate
+terraform.tfstate.backup
+local.tfvars

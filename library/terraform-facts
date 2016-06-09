@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import re
+
+def parse_terraform_variables(filename):
+    vars = {}
+    for line in open(filename, 'r'):
+        match = re.match(r'(\w+)\s*=\s*"([^"]*)".*', line)
+        if match is not None:
+            vars[match.group(1)] = match.group(2)
+    return vars
+
+def main():
+    module = AnsibleModule(
+        argument_spec = dict(
+            varsfile = dict(required = True)),
+        supports_check_mode = True)
+
+    facts = {'terraform':dict()}
+
+    for tf_varsfile in module.params['varsfile'].split(' '):
+        facts['terraform'].update(parse_terraform_variables(tf_varsfile))
+
+    module.exit_json(changed = False, ansible_facts = facts)
+
+from ansible.module_utils.basic import *
+main()

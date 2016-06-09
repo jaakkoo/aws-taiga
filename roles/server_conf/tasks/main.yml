@@ -1,0 +1,4 @@
+---
+- include: packages.yml
+- include: nginx.yml
+- include: taiga_env.yml

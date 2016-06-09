@@ -1,0 +1,14 @@
+taiga_user: taiga
+
+apps:
+  taiga_back:
+    repo: https://github.com/taigaio/taiga-back.git
+    target_folder: /srv/taiga-back/
+  taiga_front:
+    repo: https://github.com/taigaio/taiga-front-dist.git
+    target_folder: /srv/taiga-front/
+  virtualenv:
+    target_folder: /srv/virtualenv/
+  app_server:
+    target_folder: /srv/app_server/
+

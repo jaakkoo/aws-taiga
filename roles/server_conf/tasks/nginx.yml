@@ -1,0 +1,12 @@
+---
+- name: Configure nginx
+  template: src=templates/taiga.j2 dest=/etc/nginx/sites-available/taiga
+
+- name: Create symlink to sites-enabled
+  file: src=/etc/nginx/sites-available/taiga dest=/etc/nginx/sites-enabled/taiga state=link
+
+- name: Remove default nginx configuration
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Start nginx
+  service: name=nginx state=started

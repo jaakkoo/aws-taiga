@@ -1,0 +1,17 @@
+---
+- name: Create user for taiga
+  user: name="{{ taiga_user }}" shell=/bin/bash
+
+- name: Create taiga folder structure
+  file: path={{ item.value.target_folder }} state=directory owner=taiga group=taiga
+  with_dict: "{{ apps }}"
+
+- name: Clone taiga repositories
+  git: repo="{{ item.value.repo }}"
+       dest="{{ item.value.target_folder }}"
+       version=stable
+       update=no
+  become: yes
+  become_user: "{{ taiga_user }}"
+  with_dict: "{{ apps }}"
+  when: "item.value.repo is defined"

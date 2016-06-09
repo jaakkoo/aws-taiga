@@ -1,0 +1,46 @@
+---
+- name: Create configuration
+  template: src=templates/local.py.j2 dest={{ apps.taiga_back.target_folder }}/settings/local.py
+
+- name: Migrate database
+  django_manage: >
+    command=migrate
+    app_path="{{ apps.taiga_back.target_folder }}"
+    virtualenv="{{ apps.virtualenv.target_folder }}/taiga"
+  register: db_migrate
+  notify: Restart nginx
+
+- name: Load initial data
+  django_manage: >
+    command=loaddata
+    fixtures="initial_user initial_project_template initial_role"
+    app_path="{{ apps.taiga_back.target_folder }}"
+    virtualenv="{{ apps.virtualenv.target_folder }}/taiga"
+  when: db_migrate.changed
+
+- name: Compile messages
+  shell: >
+    chdir="{{ apps.taiga_back.target_folder }}"
+    . {{ apps.virtualenv.target_folder }}/taiga/bin/activate && python manage.py compilemessages
+  when: db_migrate.changed
+
+- name: Collect static files
+  django_manage: >
+    command=collectstatic
+    app_path="{{ apps.taiga_back.target_folder }}"
+    virtualenv="{{ apps.virtualenv.target_folder }}/taiga"
+  when: db_migrate.changed
+
+- name: Create folder for logs  
+  file: path={{ apps.app_server.target_folder }}/logs state=directory owner=taiga group=taiga
+
+- name: Configure application server (circus + gunicorn)
+  template: src=templates/circus.ini.j2 dest={{ apps.app_server.target_folder }}/circus.ini
+
+- name: Create init for circus
+  become_user: root
+  template: src=templates/circus.conf.j2 dest=/etc/init/circus.conf
+
+- name: Start circus
+  become_user: root
+  service: name=circus state=started

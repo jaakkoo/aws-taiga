@@ -1,0 +1,4 @@
+---
+- name: Create taiga-front configuration
+  template: src=templates/conf.json.j2 dest=/srv/taiga-front/dist/conf.json
+  notify: Restart nginx

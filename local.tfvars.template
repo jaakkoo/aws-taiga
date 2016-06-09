@@ -1,0 +1,11 @@
+# AWS SSH key pair name
+ssh_key = "themkeys"
+
+# Route 53 zone in format "/hostedzone/XYZ"
+route53_zone = "/hostedzone/XYZ"
+
+# Username for postgre database
+database_user = "Test12345"
+
+# Password for postgre database
+database_pw = "Test12345"

@@ -1,0 +1,11 @@
+---
+- name: Create virtualenv
+  shell: . /usr/share/virtualenvwrapper/virtualenvwrapper.sh && mkvirtualenv -p /usr/bin/python3.4 /srv/virtualenv/taiga
+  args:
+    executable: /bin/bash
+    creates: /srv/virtualenv/taiga
+  register: mkvirtualenv
+  failed_when: 'mkvirtualenv.changed and "New python executable" not in mkvirtualenv.stdout'
+
+- name: Install taiga-back dependencies
+  pip: requirements=/srv/taiga-back/requirements.txt virtualenv=/srv/virtualenv/taiga
